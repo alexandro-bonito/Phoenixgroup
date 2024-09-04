@@ -1,0 +1,264 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Votre Entreprise</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-logo">
+            <img src="{% static 'logo.png' %}" alt="Logo" class="logo">
+            <span class="company-name" style="color: var(--color-green);">Phoenix Group</span>
+        </div>
+        <style>
+            .header-logo .logo {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background-color: var(--banner-text-color);
+}
+        </style>
+    </header>
+    {% block content %}
+    <main style="margin-bottom: 85px;">
+        <!-- Section Panier -->
+        <section class="cart-section">
+            <h2>Mon Panier</h2>
+            {% for item in produits_panier %}
+                <div class="cart-item">
+                    <img src="{{ item.produit.image.url }}" alt="{{ item.produit.nom }}">
+                    <div class="item-details">
+                        <h3>{{ item.produit.nom }}</h3>
+                        <p>Quantité: {{ item.quantite }}</p>
+                        <p>Prix Unitaire: <span style="font-size: 10px; color: red; font-weight: 700;">fcfa</span>{{ item.prix_unitaire }}</p>
+                    </div>
+                    <div class="item-total">
+                        <p><span style="font-size: 10px; color: red; font-weight: 700;">fcfa</span>{{ item.total_produit }}</p>
+                    </div>
+
+                    <div class="item-actions">
+                        <a href="{% url 'supprimer_du_panier' item.produit.id %}" style="color: red;"><i class="fas fa-trash-alt"></i></a>
+                    </div>
+                </div>
+            {% endfor %}
+            
+            <div class="cart-summary">
+                <p>Total Panier: <span>{{ total_panier }}<span style="font-size: 10px; color: red; font-weight: 700;">fcfa</span></span></p>
+            </div>
+        </section>
+    
+        <!-- Formulaire Client -->
+        <section class="checkout-form-section">
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="hidden" id="nom" name="nom" required>
+                </div>
+    
+                <div class="form-group">
+                    <input type="hidden" id="prenom" name="prenom" required>
+                </div>
+    
+                <div class="form-group">
+                    <input type="hidden" id="adresse" name="adresse" required>
+                </div>
+    
+                <div class="form-group">
+                    <input type="hidden" id="ville" name="ville" required>
+                </div>
+    
+                <button type="submit" class="pay-button"> <i class="fab fa-whatsapp"></i> Commande whatsapp</button>
+            </form>
+        </section>
+    </main>
+    {% endblock %}
+    
+    <footer>
+        <div class="footer-container">
+            <a href="{% url 'home' %}" class="footer-item">
+                <i class="fas fa-home"></i>
+                <span>Accueil</span>
+            </a>
+            <a href="{% url 'blog_posts' %}" class="footer-item">
+                <i class="fas fa-blog"></i>
+                <span>Blog</span>
+            </a>
+            <a href="{% url 'produits_par_categorie' %}" class="footer-item">
+                <i class="fas fa-store"></i>
+                <span>Boutique</span>
+            </a>
+            <a href="{% url 'afficher_profil' %}" class="footer-item">
+                <i class="fas fa-user"></i>
+                <span>Compte</span>
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
+<style>
+    :root {
+    background-color: #fff;
+    --color-green: #05d33c;
+    --color-border: #ddd;
+    --color-black: #000000;
+    --banner-text-color: #ffffff;
+    --banner-overlay-color: rgba(0, 0, 0, 0.5);
+    --footer-bg-color: #000;
+    --footer-text-color: #fff;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    color: var(--color-black);
+}
+
+header {
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.header-logo .logo {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background-color: var(--banner-text-color);
+}
+
+.header-logo .logo {
+    width: 40px;
+    height: 40px;
+}
+
+.header-logo .company-name {
+    font-size: 18px;
+    margin-left: 10px;
+    font-weight: bold;
+}
+.cart-section {
+    background-color: rgba(255, 255, 255, 0.8); /* Fond semi-transparent blanc */
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.cart-section h2 {
+    font-size: 24px;
+    color: var(--color-black);
+    margin-bottom: 20px;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid var(--color-border);
+}
+p{
+    color: var(--color-green);
+}
+
+.cart-item:last-of-type {
+    border-bottom: none; /* Enlever la bordure pour le dernier élément */
+}
+
+.cart-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    margin-right: 15px;
+    border-radius: 5px;
+}
+
+.item-details {
+    flex: 1;
+}
+
+.item-details h3 {
+    font-size: 18px;
+    margin: 0 0 5px;
+}
+
+.item-details p {
+    margin: 5px 0;
+}
+
+.item-total {
+    font-weight: bold;
+    text-align: right;
+}
+
+.cart-summary {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: right;
+}
+
+.cart-summary span {
+    color: var(--color-green);
+}
+
+.checkout-form-section {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    margin: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.checkout-form-section h2 {
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+}
+
+.pay-button {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background-color: var(--color-green);
+    color: #fff;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.pay-button:hover {
+    background-color: darken(var(--color-green), 10%);
+}
+
+a{
+    text-decoration: none;
+    color: var(--banner-text-color);
+}
+
+
+</style>
